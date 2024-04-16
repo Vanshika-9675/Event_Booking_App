@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const {validateEmail ,validatePassword} = require('../utils/validate');
+const {validateEmail ,validatePassword} = require('./utils/validate');
 
 require('dotenv').config();
 
@@ -27,9 +27,10 @@ exports.userRegister = async(req,res)=>{
          }    
          
          //validating password through regex
+         console.log(validatePassword(password));
          if (!validatePassword(password)) {
             console.log('Choose a strong password');
-           return res.status(400).json({
+            return res.status(400).json({
                 success:false,
                 message:"Enter a strong password of atleast 8 charachters long with an uppercase , lowercase , digit and a scpecial charachter"
             })
@@ -75,7 +76,7 @@ exports.userRegister = async(req,res)=>{
           }
        )
    
-       user.token = token;
+     //  user.token = token;
        user.password = undefined;
 
        //sending token in user cookie 
@@ -123,7 +124,7 @@ exports.userLogin = async(req,res)=>{
      if(user && (await bcrypt.compare(password , user.password))){
         const payload = {
             id:user._id
-      }
+        }
         const token = jwt.sign(payload ,process.env.JWT_SECRET , {expiresIn:'2d'});
 
         user.token = token;
@@ -132,7 +133,7 @@ exports.userLogin = async(req,res)=>{
         //sending token in user cookie 
          const options = {
             expires :new Date(Date.now()+ 3*24*60*60*1000),
-            httpOnly: true
+            httpOnly: true                 
          }
 
          res.status(200).cookie("token",token,options).json(

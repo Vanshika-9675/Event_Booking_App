@@ -19,6 +19,28 @@ const organizerSchema = new mongoose.Schema({
     events:{
         type: [event.Schema],
         default: []
+    },
+    myBookings:{
+        type:[
+            { 
+                bookingId:mongoose.Schema.Types.ObjectId,
+                userId:mongoose.Schema.Types.ObjectId,
+                eventId:mongoose.Schema.Types.ObjectId,
+                eventName:{
+                    type:String,
+                    required:true,
+                },
+                userName:{
+                    type: String,
+                    required: true
+                },
+                ticket: {
+                    type: String,
+                    required: true
+                }
+            }
+        ],
+        default:[]
     }
 })
 

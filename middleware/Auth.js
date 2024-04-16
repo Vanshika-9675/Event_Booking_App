@@ -10,6 +10,7 @@ exports.authenticateUser = (req, res, next) => {
           message: 'Authorization token is missing',
       });
   }
+  
   const tokenValue = token.split(" ")[1];
 
   try {

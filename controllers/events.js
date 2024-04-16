@@ -5,11 +5,11 @@ const Organizer = require('../models/organizer');
 exports.addEvent = async(req,res)=>{
     try {
 
-        const { eventName, description, date, time, location, capacity, tickets } = req.body;
+        const { eventName,category,description, date, time, location, tickets } = req.body;
 
         const orgId = req.organizer.id;
     
-        if(!(eventName, description, date, time, location, capacity, tickets)){
+        if(!(eventName,category, description, date, time, location, tickets)){
             res.status(400).json({
                 success:false,
                 message:"Enter all the details carefully"
@@ -17,12 +17,13 @@ exports.addEvent = async(req,res)=>{
         }
     
         const event = new Event({
+            orgId,
             eventName,
+            category,
             description,
             date,
             time,
             location,
-            capacity,
             tickets
         });
     
@@ -93,7 +94,7 @@ exports.deleteEvent = async (req, res) => {
 //api for editing event
 exports.editEvent = async (req, res) => {
     try {
-        const { eventName, description, date, time, location, capacity, tickets } = req.body;
+        const { eventName,category,description, date, time, location, tickets } = req.body;
         const eventId = req.params.id;
 
         const orgId = req.organizer.id;
@@ -108,16 +109,16 @@ exports.editEvent = async (req, res) => {
         }
 
         if (eventName) event.eventName = eventName;
+        if (category) event.category = category;
         if (description) event.description = description;
         if (date) event.date = date;
         if (time) event.time = time;
         if (location) event.location = location;
-        if (capacity) event.capacity = capacity;
         if (tickets) event.tickets = tickets;
 
         await event.save();
 
-        const organizer = await Organizer.findById(orgId); // Added await here
+        const organizer = await Organizer.findById(orgId); 
 
         const index = organizer.events.findIndex(event => event._id.toString() === eventId);
 
@@ -150,7 +151,7 @@ exports.editEvent = async (req, res) => {
 exports.fetchEventsbyOrganizerId = async(req,res)=>{
    try {
 
-        const orgId = req.params.id;
+        const orgId = req.organizer.id;
 
         const organizer = await Organizer.findById(orgId);
 
