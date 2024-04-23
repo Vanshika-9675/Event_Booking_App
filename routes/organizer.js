@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const {orgaanizerLogin,organizerRegister,editProfile} = require('../controllers/organizerAuth');
+const {orgaanizerLogin,organizerRegister,editProfile,deleteProfile} = require('../controllers/organizerAuth');
 const {addEvent,deleteEvent,editEvent , fetchEventsbyOrganizerId} = require('../controllers/events');
 const {authenticateOrganizer} = require('../middleware/Auth');
 const {fetchOrganizerBooking,cancelBookingByOrganizer} = require('../controllers/bookings')
@@ -10,6 +10,7 @@ const {fetchOrganizerBooking,cancelBookingByOrganizer} = require('../controllers
 router.post('/register',organizerRegister);
 router.post('/login',orgaanizerLogin);
 router.put('/edit',authenticateOrganizer,editProfile);
+router.delete('/delete',authenticateOrganizer,deleteProfile);
 
 //route for adding event 
 router.post('/event',authenticateOrganizer,addEvent);

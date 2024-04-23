@@ -19,7 +19,6 @@ exports.userRegister = async(req,res)=>{
 
         //validating email through regex
         if (!validateEmail(email)) {
-            console.log('Email is invalid');
            return res.status(400).json({
                 success:false,
                 message:"Email is invalid!"
@@ -27,12 +26,10 @@ exports.userRegister = async(req,res)=>{
          }    
          
          //validating password through regex
-         console.log(validatePassword(password));
          if (!validatePassword(password)) {
-            console.log('Choose a strong password');
             return res.status(400).json({
                 success:false,
-                message:"Enter a strong password of atleast 8 charachters long with an uppercase , lowercase , digit and a scpecial charachter"
+                message:"Enter a strong password of atleast 8 charachters long with an uppercase , lowercase and a digit"
             })
          }   
    
@@ -88,7 +85,8 @@ exports.userRegister = async(req,res)=>{
        return res.status(200).cookie("token",token,options).json({
            data:user,
            success:true,
-           message:'User created successfully'
+           message:'User created successfully',
+           token
        })
         
     } catch (error) {
@@ -117,7 +115,7 @@ exports.userLogin = async(req,res)=>{
      if(!user){
         return res.status(404).json({
             success:false,
-            message:"User not found"
+            message:"User not found",
         })
      }
 
@@ -176,6 +174,17 @@ exports.editProfile = async (req, res) => {
            });
        }
 
+       if(email){
+          const existingUser = await User.findOne({email});
+      
+          if(existingUser){
+              return res.status(401).json({
+                  success:false,
+                  message:"USer already exist with this email",
+            })
+          }
+       }
+
         //validating email through regex
         if (email && !validateEmail(email)) {
            return res.status(400).json({
@@ -188,7 +197,7 @@ exports.editProfile = async (req, res) => {
          if (password && !validatePassword(password)) {
            return res.status(400).json({
                 success:false,
-                message:"Enter a strong password of atleast 8 charachters long with an uppercase , lowercase , digit and a scpecial charachter"
+                message:"Enter a strong password of atleast 8 charachters long with an uppercase , lowercase and a digit"
             })
          }  
 
@@ -212,3 +221,22 @@ exports.editProfile = async (req, res) => {
        });
    }
 };
+
+//api to delete profile
+
+exports.deleteProfile = async (req,res)=>{
+    try {
+      const userId = req.user.id; 
+      await User.findByIdAndDelete(userId);  
+      res.status(200).json({
+         success:true,
+         message:'Profile deleted successfully!'
+      })
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+          success: false,
+          message: "Internal Server error"
+      });
+    }
+}

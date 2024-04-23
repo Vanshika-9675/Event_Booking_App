@@ -29,7 +29,7 @@ exports.organizerRegister = async(req,res)=>{
          if (!validatePassword(password)) {
            return res.status(400).json({
                 success:false,
-                message:"Enter a strong password of atleast 8 charachters long with an uppercase , lowercase , digit and a scpecial charachter"
+                message:"Enter a strong password of atleast 8 charachters long with an uppercase , lowercase and a digit"
             })
          }   
    
@@ -85,7 +85,8 @@ exports.organizerRegister = async(req,res)=>{
        return res.status(200).cookie("token",token,options).json({
            data:user,
            success:true,
-           message:'Organizer registered successfully'
+           message:'Organizer registered successfully',
+           token
        })
         
     } catch (error) {
@@ -173,6 +174,17 @@ exports.editProfile = async (req, res) => {
             });
         }
 
+        if(email){
+          const existingUser = await Organizer.findOne({email});
+      
+          if(existingUser){
+              return res.status(401).json({
+                  success:false,
+                  message:"Organizer already exist with this email",
+            })
+          }
+       }
+
          //validating email through regex
          if (email && !validateEmail(email)) {
             return res.status(400).json({
@@ -185,7 +197,7 @@ exports.editProfile = async (req, res) => {
           if (password && !validatePassword(password)) {
             return res.status(400).json({
                  success:false,
-                 message:"Enter a strong password of atleast 8 charachters long with an uppercase , lowercase , digit and a scpecial charachter"
+                 message:"Enter a strong password of atleast 8 charachters long with an uppercase , lowercase and a digit"
              })
           }  
 
@@ -209,3 +221,20 @@ exports.editProfile = async (req, res) => {
         });
     }
 };
+
+exports.deleteProfile = async (req,res)=>{
+  try {
+    const orgId = req.organizer.id; 
+    await Organizer.findByIdAndDelete(orgId);  
+    res.status(200).json({
+       success:true,
+       message:'Profile deleted successfully!'
+    })
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+        success: false,
+        message: "Internal Server error"
+    });
+  }
+}
