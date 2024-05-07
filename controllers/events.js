@@ -5,11 +5,11 @@ const Organizer = require('../models/organizer');
 exports.addEvent = async(req,res)=>{
     try {
 
-        const { eventName,category,description, date, time, location, tickets } = req.body;
+        const { eventName,category,description, date, time, location, tickets,Imagesrc } = req.body;
 
         const orgId = req.organizer.id;
     
-        if(!(eventName,category, description, date, time, location, tickets)){
+        if(!(eventName,category, description, date, time, location, tickets,Imagesrc)){
             res.status(400).json({
                 success:false,
                 message:"Enter all the details carefully"
@@ -24,7 +24,8 @@ exports.addEvent = async(req,res)=>{
             date,
             time,
             location,
-            tickets
+            tickets,
+            Imagesrc
         });
     
         await event.save();
@@ -189,6 +190,34 @@ exports.fetchAllEvents = async(req,res)=>{
 
     } 
     catch (error) {
+        console.log(error);
+        res.status(500).json({
+           success:false,
+           message:"Internal server error"
+        })
+    }
+}
+
+//fetch event by id
+exports.fetchSingleEvent= async(req , res)=>{
+    try {
+        const eventId = req.params.id;
+
+        const event = await Event.findById(eventId);
+
+        if (!event) {
+            return res.status(404).json({
+                success: false,
+                message: "Event not found!"
+            })
+        }
+        res.status(200).json({
+            data:event,
+            success: true,
+            message: "Event updated successfully!!"
+        });
+
+    } catch (error) {
         console.log(error);
         res.status(500).json({
            success:false,

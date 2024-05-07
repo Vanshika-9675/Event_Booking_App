@@ -3,7 +3,7 @@ const router = express.Router();
 
 const {userLogin,userRegister,editProfile,deleteProfile} = require('../controllers/userAuth');
 const {authenticateUser} = require('../middleware/Auth')
-const {fetchAllEvents} = require('../controllers/events');
+const {fetchAllEvents,fetchSingleEvent} = require('../controllers/events');
 const {fetchTicketTypes, bookTickets,fetchUserBookings ,cancelBooking} = require("../controllers/bookings");
 const {fetchCategory,fetchDate,fetchLocation} = require("../controllers/filtering")
 
@@ -12,8 +12,11 @@ router.post('/register',userRegister);
 router.post('/login',userLogin);
 router.put('/edit',authenticateUser,editProfile);
 router.delete('/delete',authenticateUser,deleteProfile);
+
 //fetching all events
 router.get('/events',fetchAllEvents);
+//get event by id
+router.get('/events/:id',fetchSingleEvent);
 
 //get ticket types of particular event 
 router.get('/tickets/:eventId',fetchTicketTypes);

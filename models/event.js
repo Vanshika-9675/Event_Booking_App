@@ -25,6 +25,10 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  Imagesrc:{
+      type:String,
+      required:true
+  },
   tickets: {
     type: [
       {
