@@ -38,6 +38,9 @@ exports.bookTickets = async (req, res) => {
         const userId = req.user.id;
         const eventId = req.params.eventId;
         const ticketId = req.params.ticketId;
+        const {email} = req.body;
+        const {userName} = req.body;
+
 
         const user = await User.findById(userId);
         if (!user) {
@@ -46,8 +49,6 @@ exports.bookTickets = async (req, res) => {
                 message: "User not found"
             });
         }
-
-        const {userName} = user;
 
         const event = await Event.findById(eventId);
         if (!event) {
@@ -103,7 +104,9 @@ exports.bookTickets = async (req, res) => {
             time,
             location,
             ticket: TicketType,
-            price
+            price,
+            userName,
+            email
         });
 
         await user.save();
