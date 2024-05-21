@@ -34,15 +34,12 @@ const eventSchema = new mongoose.Schema({
       {
         TicketType: {
           type: String,
-          required: true,
         },
         ticketNum: {
           type: Number,
-          required: true,
         },
         price: {
           type: Number,
-          required: true,
         },
       },
     ],

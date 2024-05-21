@@ -1,5 +1,6 @@
 const Event = require('../models/event');
 const Organizer = require('../models/organizer');
+const mongoose = require('mongoose');
 
 //api for  adding event details
 exports.addEvent = async(req,res)=>{
@@ -95,8 +96,16 @@ exports.deleteEvent = async (req, res) => {
 //api for editing event
 exports.editEvent = async (req, res) => {
     try {
+        
         const { eventName,category,description, date, time, location, tickets } = req.body;
         const eventId = req.params.id;
+
+        console.log(eventId);
+
+        if (!mongoose.Types.ObjectId.isValid(eventId)) {
+            return res.status(400).json({ error: 'Invalid event ID' });
+        }
+        
 
         const orgId = req.organizer.id;
 
